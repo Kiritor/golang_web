@@ -13,7 +13,7 @@ import (
 
 func adminHandler(w http.ResponseWriter, r *http.Request) {
     // 获取cookie
-    cookie, err := r.Cookie("admin_name")
+    cookie, err := r.Cookie("username")
     if err != nil || cookie.Value == ""{
 		log.Println("重定向到登录界面")
         http.Redirect(w, r, "/login", http.StatusFound)
