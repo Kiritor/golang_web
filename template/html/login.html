@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>登录</title>
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <script type="text/javascript" src="/js/jquery-1.9.1.js"></script>
+</head>
+
+<body>
+    <div class="top_div"></div>
+    <div style="width: 400px;height: 200px;margin: auto auto;background: #ffffff;text-align: center;margin-top: -100px;border: 1px solid #e7e7e7">
+        <div style="width: 165px;height: 96px;position: absolute">
+            <div class="tou"></div>
+            <div id="left_hand" class="initial_left_hand"></div>
+            <div id="right_hand" class="initial_right_hand"></div>
+        </div>
+        <form id="form" action="/ajax/login">
+            <p style="padding: 30px 0px 10px 0px;position: relative;">
+                <span class="u_logo"></span>
+                <input class="ipt" type="text" placeholder="请输入用户名" id="admin_name" name="admin_name">
+            </p>
+            <p style="position: relative;">
+                <span class="p_logo"></span>
+                <input id="admin_password" name="admin_password" class="ipt" type="password" placeholder="请输入密码">
+            </p>
+
+            <div style="height: 50px;line-height: 50px;margin-top: 30px;border-top: 1px solid #e7e7e7;">
+                <p style="margin: 0px 35px 20px 45px;">
+                    <span style="float: left"><a href="#" style="color:#ccc;">忘记密码?</a></span>
+                    <span style="float: right">
+               <button id="login" type="button" style="background: #008ead;padding: 5px 10px;border-radius: 4px;border: 1px solid #1a7598;color: #FFF;font-weight: bold;">登录</button>
+           </span>
+                </p>
+            </div>
+        </form>
+        </form>
+    </div>
+</body>
+<script>
+
+	$("#login").on("click",function(){
+		 var dataForm = $("#form");
+		 var action = dataForm.attr("action")
+		 $.post(action,dataForm.serialize(),function(result){
+			 if (result.Ret == "0") {
+				 alert(result.Reason);
+			 }else {
+				 location.href = "/admin"
+			 }
+		 })
+    });
+</script>
+
+</html>
