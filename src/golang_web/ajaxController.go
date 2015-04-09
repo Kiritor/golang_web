@@ -2,7 +2,7 @@ package main
 
 import (
 	"net/http"
-	"github.com/ziutek/mymysql/mysql"
+    //"github.com/ziutek/mymysql/mysql"
 	_ "github.com/ziutek/mymysql/thrsafe"
 	"encoding/json"
 	"log"
@@ -28,36 +28,32 @@ func (controller *ajaxController) LoginAction(w http.ResponseWriter,r *http.Requ
 		OutputJson(w,0,"参数错误",nil)
 		return
 	}
-	admin_name :=r.FormValue("admin_name")
-	admin_password:=r.FormValue("admin_password")
-	if admin_name == "" || admin_password == "" {
+	username :=r.FormValue("username")
+	password:=r.FormValue("password")
+	if username == "" || password == "" {
 		OutputJson(w,0,"参数错误",nil)
 	}
 
-	db:=mysql.New("tcp","","127.0.0.1:3306","root","root","webdemo")
-	if err :=db.Connect();err !=nil {
-		log.Println(err)
-		OutputJson(w,0,"数据库操作失败",nil)
-		return
-	}
+	db:=NewDataMng()
 	defer db.Close()
-	rows,res,err:= db.Query("select * from webdemo_admin where admin_name='%s'",admin_name)
+	rows,res,err:= db.Query("select * from user where username='%s'",username)
 	if err !=nil {
 		log.Println(err)
 		OutputJson(w,0,"数据库操作失败",nil)
 		return
 	}
 
-	name:=res.Map("admin_password")
-	admin_password_db :=rows[0].Str(name)
-	if admin_password !=admin_password_db {
+	name:=res.Map("password")
+	log.Println(username)
+	password_db :=rows[0].Str(name)
+	if password !=password_db {
 		OutputJson(w, 0, "密码输入错误", nil)
         return
 	}
 
 	//存入cookie
 
-	cookie :=http.Cookie{Name:"admin_name",Value:rows[0].Str(res.Map("admin_name")),Path:"/"}
+	cookie :=http.Cookie{Name:"username",Value:rows[0].Str(res.Map("username")),Path:"/"}
 	http.SetCookie(w,&cookie)
 	OutputJson(w, 1, "操作成功", nil)
     return
@@ -85,19 +81,19 @@ func (controller *ajaxController) GetUsersAction(w http.ResponseWriter,r *http.R
 		return
 	}
 
-	db:=mysql.New("tcp","","127.0.0.1:3306","root","root","webdemo")
+	db:=NewDataMng()
 	if err :=db.Connect();err !=nil {
 		log.Println(err)
 		OutputJson(w,0,"数据库操作失败",nil)
 		return
 	}
 	defer db.Close()
-	rows,res,err:= db.Query("select * from webdemo_admin where admin_name='%s'","LCore")
+	rows,res,err:= db.Query("select * from user where username='%s'","LCore")
 	if err !=nil {
 		log.Println(err)
 		OutputJson(w,0,"数据库操作失败",nil)
 		return
 	}
-	OutputJson(w, 1, "操作成功", rows[0].Str(res.Map("admin_name")))
+	OutputJson(w, 1, "操作成功", rows[0].Str(res.Map("username")))
     return
 }
